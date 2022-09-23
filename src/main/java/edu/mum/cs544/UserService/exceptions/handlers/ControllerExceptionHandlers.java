@@ -1,5 +1,6 @@
 package edu.mum.cs544.UserService.exceptions.handlers;
 
+import edu.mum.cs544.UserService.dtos.ResponseDto;
 import edu.mum.cs544.UserService.exceptions.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +11,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ControllerExceptionHandlers {
 
     @ExceptionHandler
-    public ResponseEntity<Object> exception(IllegalArgumentException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseDto<String>> exception(IllegalArgumentException exception) {
+        ResponseDto<String> responseDto = new ResponseDto<>(null, true, null, exception.getMessage());
+        return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> exception(UsernameAlreadyExistsException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.FORBIDDEN);
+    public ResponseEntity<ResponseDto<String>> exception(UsernameAlreadyExistsException exception) {
+        ResponseDto<String> responseDto = new ResponseDto<>(null, true, null, exception.getMessage());
+        return new ResponseEntity<>(responseDto, HttpStatus.FORBIDDEN);
     }
 }

@@ -1,5 +1,6 @@
 package edu.mum.cs544.UserService.contrtollers;
 
+import edu.mum.cs544.UserService.dtos.ResponseDto;
 import edu.mum.cs544.UserService.dtos.UpdateUserDto;
 import edu.mum.cs544.UserService.dtos.UserDto;
 import edu.mum.cs544.UserService.models.User;
@@ -19,32 +20,37 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity signUp(@RequestBody User user) {
+    public ResponseEntity<ResponseDto<String>> signUp(@RequestBody User user) {
         userService.save(user);
-        return new ResponseEntity<>("Signup Successful", HttpStatus.CREATED);
+        ResponseDto<String> responseDto = new ResponseDto<>("Signup Successful",false,"Signup Successful", null);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> update(@RequestBody UpdateUserDto user, @PathVariable int id) {
+    public ResponseEntity<ResponseDto<UserDto>> update(@RequestBody UpdateUserDto user, @PathVariable int id) {
         UserDto updatedUser = userService.update(user, id);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        ResponseDto<UserDto> responseDto = new ResponseDto<>("Update Successful",false, updatedUser, null);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping()
-    public List<UserDto> getAll() {
-        return userService.getAll();
+    public ResponseDto<List<UserDto>> getAll() {
+        List<UserDto> users = userService.getAll();
+        return new ResponseDto<>("User List",false, users, null);
     }
 
     @GetMapping("/{id}")
-    public UserDto getAll(@PathVariable int id) {
-        return userService.get(id);
+    public ResponseDto<UserDto> getAll(@PathVariable int id) {
+        UserDto user =  userService.get(id);
+        return new ResponseDto<>("User",false, user, null);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserDto> delete(@PathVariable int id) {
+    public ResponseEntity<ResponseDto<UserDto>> delete(@PathVariable int id) {
         UserDto user = userService.delete(id);
         if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            ResponseDto<UserDto> userDtoResponseDto = new ResponseDto<>("User Soft Deleted", false, user, null);
+            return new ResponseEntity<>(userDtoResponseDto, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.RESET_CONTENT);
     }
