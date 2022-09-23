@@ -1,4 +1,4 @@
-package edu.mum.cs544.UserService.Security;
+package edu.mum.cs544.UserService.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
