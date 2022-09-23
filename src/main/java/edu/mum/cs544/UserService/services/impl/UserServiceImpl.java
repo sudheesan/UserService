@@ -8,7 +8,6 @@ import edu.mum.cs544.UserService.repositories.UserDao;
 import edu.mum.cs544.UserService.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
-    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
     @Override
@@ -32,9 +30,8 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         User existingUser = userDao.getUserByUsername(user.getUsername());
         if (existingUser == null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
             userDao.save(user);
-        }else{
+        } else {
             throw new UsernameAlreadyExistsException("User Already Exists");
         }
     }
@@ -62,7 +59,7 @@ public class UserServiceImpl implements UserService {
             User anotherUser = userDao.getUserByUsername(updatedUserName);
             if (anotherUser == null || anotherUser.equals(existingUser)) {
                 existingUser.setUsername(updatedUserName);
-            }else{
+            } else {
                 throw new UsernameAlreadyExistsException("Username Already Exists");
             }
 
@@ -80,5 +77,10 @@ public class UserServiceImpl implements UserService {
             return modelMapper.map(user, UserDto.class);
         }
         return null;
+    }
+
+    @Override
+    public User getUserByUserName(String name) {
+        return  userDao.getUserByUsername(name);
     }
 }

@@ -22,27 +22,33 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ResponseDto<String>> signUp(@RequestBody User user) {
         userService.save(user);
-        ResponseDto<String> responseDto = new ResponseDto<>("Signup Successful",false,"Signup Successful", null);
+        ResponseDto<String> responseDto = new ResponseDto<>("Signup Successful", false, "Signup Successful", null);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDto<UserDto>> update(@RequestBody UpdateUserDto user, @PathVariable int id) {
         UserDto updatedUser = userService.update(user, id);
-        ResponseDto<UserDto> responseDto = new ResponseDto<>("Update Successful",false, updatedUser, null);
+        ResponseDto<UserDto> responseDto = new ResponseDto<>("Update Successful", false, updatedUser, null);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping()
     public ResponseDto<List<UserDto>> getAll() {
         List<UserDto> users = userService.getAll();
-        return new ResponseDto<>("User List",false, users, null);
+        return new ResponseDto<>("User List", false, users, null);
+    }
+
+    @GetMapping("/getUserByUsername")
+    public ResponseDto<User> getUserByUserName(@RequestParam String username) {
+        User user = userService.getUserByUserName(username);
+        return new ResponseDto<>("User", false, user, null);
     }
 
     @GetMapping("/{id}")
     public ResponseDto<UserDto> getAll(@PathVariable int id) {
-        UserDto user =  userService.get(id);
-        return new ResponseDto<>("User",false, user, null);
+        UserDto user = userService.get(id);
+        return new ResponseDto<>("User", false, user, null);
     }
 
     @DeleteMapping("/{id}")
