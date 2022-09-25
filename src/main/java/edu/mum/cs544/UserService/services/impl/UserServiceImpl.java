@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         User existingUser = userDao.getUserByUsername(user.getUsername());
         if (existingUser == null) {
+            user.setActive(true);
             userDao.save(user);
         } else {
             throw new UsernameAlreadyExistsException("User Already Exists");
@@ -38,8 +39,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto get(int id) {
-        User user = userDao.findById(id).get();
-        return modelMapper.map(user, UserDto.class);
+        var user = userDao.findById(id);
+        if(user.isPresent()){
+            return modelMapper.map(user, UserDto.class);
+        }else{
+            return null;
+        }
+
     }
 
     @Override
@@ -49,6 +55,10 @@ public class UserServiceImpl implements UserService {
         String updatedLastName = user.getLastname();
         String updatedUserName = user.getUsername();
 
+
+        if(user == null){
+            return null;
+        }
         if (updatedFirstName != null) {
             existingUser.setFirstname(updatedFirstName);
         }

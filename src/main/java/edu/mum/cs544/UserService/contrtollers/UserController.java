@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseDto<UserDto> getAll(@PathVariable int id) {
+    public ResponseDto<UserDto> getUserById(@PathVariable int id) {
         UserDto user = userService.get(id);
         return new ResponseDto<>("User", false, user, null);
     }
