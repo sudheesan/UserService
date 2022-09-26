@@ -8,6 +8,7 @@ import edu.mum.cs544.UserService.repositories.UserDao;
 import edu.mum.cs544.UserService.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +77,14 @@ public class UserServiceImpl implements UserService {
         }
         userDao.save(existingUser);
         return modelMapper.map(existingUser, UserDto.class);
+    }
+
+    static Specification usernameLike(String username) {
+        return (user, cq, cb) -> cb.like(user.get("username"), "%" + username + "%");
+    }
+    public List<UserDto> filterUsersByUserName(String username){
+        List<User> filteredUsers = userDao.findAll(usernameLike(username));
+        return filteredUsers.stream().map(u -> modelMapper.map(u, UserDto.class)).collect(Collectors.toList());
     }
 
     @Override

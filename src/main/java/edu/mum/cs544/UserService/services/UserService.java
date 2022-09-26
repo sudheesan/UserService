@@ -15,4 +15,5 @@ public interface UserService {
     public UserDto update(UpdateUserDto user, int id);
     public UserDto delete(int id);
     public User getUserByUserName(String name);
+    public List<UserDto> filterUsersByUserName(String username);
 }
