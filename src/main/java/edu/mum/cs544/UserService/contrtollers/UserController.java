@@ -40,8 +40,8 @@ public class UserController {
     }
 
     @GetMapping("/filterUsersByUsername")
-    public ResponseDto<List<UserDto>> filterUsersByUserName(@RequestParam String username) {
-        List<UserDto> users = userService.filterUsersByUserName(username);
+    public ResponseDto<List<UserDto>> filterUsersByUserName(@RequestParam String username, @RequestParam String firstname) {
+        List<UserDto> users = userService.filterUsersByUserName(username, firstname);
         return new ResponseDto<>("User List", false, users, null);
     }
 

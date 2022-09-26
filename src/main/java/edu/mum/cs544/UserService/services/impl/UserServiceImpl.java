@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,8 +83,14 @@ public class UserServiceImpl implements UserService {
     static Specification usernameLike(String username) {
         return (user, cq, cb) -> cb.like(user.get("username"), "%" + username + "%");
     }
-    public List<UserDto> filterUsersByUserName(String username){
-        List<User> filteredUsers = userDao.findAll(usernameLike(username));
+    static Specification firstNameLike(String firstname) {
+        return (book, cq, cb) -> cb.like(book.get("firstname"), "%" + firstname + "%");
+    }
+    public List<UserDto> filterUsersByUserName(String username, String firstname){
+        if(username.equals("")  && firstname.equals("")){
+            return new ArrayList<>();
+        }
+        List<User> filteredUsers = userDao.findAll(usernameLike(username).and(firstNameLike(firstname)));
         return filteredUsers.stream().map(u -> modelMapper.map(u, UserDto.class)).collect(Collectors.toList());
     }
 
